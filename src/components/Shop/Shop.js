@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { addToDb, getStoredCart } from '../../utilities/fakedb';
 import Cart from '../Cart/Cart';
 import Product from '../Product/Product';
@@ -31,24 +32,36 @@ const Shop = () => {
             const storedCart = [];
     // object tai for in use kora hoyeche
     for(const key in savedCart){
-        // console.log(key);
+        // console.log(key,savedCart[key]);
         const addedProduct = products.find(product => product.key === key);
         // console.log(key , addedProduct) ;
-        storedCart.push(addedProduct);
-    }
-    setCart(storedCart);
+        if(addedProduct){
+            const quantity = savedCart[key];
+            addedProduct.quantity = quantity;
+            // console.log(addedProduct);
+            storedCart.push(addedProduct);
         }
+       
+    }
+         setCart(storedCart);
+     }
 
     },[products])
 
     // eventhandler 
     const handleAddToCart = product => {
-        // console.log('clicked');
-        // console.log(product.name);
-        console.log(product);
-         const newCart = [...cart , product];
+        const existsProduct = cart.find(pd =>pd.key === product.key)
+        let newCart = [];
+        if(existsProduct){
+       const restProduct = cart.filter(pd => pd.key !== product.key);
+      existsProduct.quantity = existsProduct.quantity + 1;
+      newCart = [...restProduct ,product];
+        }
+        else {
+            product.quantity = 1;
+            newCart = [...newCart , product];
+        }
          setCart(newCart);
-        
         // save to  localStorage  
          addToDb(product.key)
     }
@@ -79,7 +92,11 @@ const handleSearch = event =>{
               }
             </div>
              <div className="cart-container">
-                       <Cart cart= {cart}  ></Cart>
+                       <Cart cart= {cart}  >
+                        <Link to= "/review">
+                        <button  className= "btn-regular">Review your order</button>
+                        </Link>
+                       </Cart>
              </div>
      
         </div>
