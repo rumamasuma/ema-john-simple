@@ -6,7 +6,7 @@ const useCart = products => {
 
     useEffect(() =>{
 
-if(products.length){
+       if(products.length){
     const savedCart = getStoredCart();
     const storedCart =[];
 
@@ -21,7 +21,7 @@ if(products.length){
        }
     }
     setCart(storedCart);
-} 
+    } 
     },[products]);
     return [cart ,setCart];   
 };
